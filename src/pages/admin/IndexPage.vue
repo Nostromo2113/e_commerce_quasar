@@ -68,6 +68,7 @@
       </q-card-actions>
     </q-card>
     </div>
+
 </template>
 
 <style scoped>

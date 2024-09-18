@@ -1,1 +1,32 @@
 // app global css in SCSS form
+.text-center-y {
+  display: flex;
+  align-items: center;
+}
+
+.width-25 {
+  width: 23%;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.default-btn {
+  padding: 0;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.gap-10 {
+  gap: 10px;
+}
