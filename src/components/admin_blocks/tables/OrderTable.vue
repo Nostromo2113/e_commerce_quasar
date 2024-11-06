@@ -43,32 +43,6 @@
         </q-tr>
       </template>
     </q-table>
-    <q-dialog
-      v-model="modalRemove"
-      persistent
-      aria-labelledby="remove-dialog-title"
-      aria-describedby="remove-dialog-description"
-    >
-      <q-card>
-        <q-card-section class="row items-center">
-          <span class="text-h6"
-            >Удалить категорию: <strong>{{ itemToRemove.title }}</strong
-            >?</span
-          >
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Нет" color="primary" v-close-popup></q-btn>
-          <q-btn
-            @click="destroy(itemToRemove)"
-            flat
-            label="Да"
-            color="negative"
-            v-close-popup
-          ></q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
     <q-dialog v-model="addModal" persistent>
       <ConfirmationCard itemTitle="Создать заказ" destroy @confirm="store" />
     </q-dialog>
@@ -80,13 +54,12 @@ import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { defineEmits } from "vue";
 import ConfirmationCard from "../ConfirmationCard.vue";
-import DefaultForm from "../forms/DefaultForm.vue";
 
 const router = useRouter();
 const navigateToOrder = (orderId, userId) => {
   router.push({ name: "admin.order.show", params: { orderId, userId } });
 };
-const emit = defineEmits(["getItem", "storeItem", "updateItem", "destroyItem"]);
+const emit = defineEmits(["storeItem", "updateItem", "destroyItem"]);
 
 const props = defineProps({
   tableTitle: {
@@ -106,12 +79,8 @@ const props = defineProps({
     type: Object,
   },
 });
-console.log(props.columns);
-const responseStatus = ref(props.responses);
 
 const preloaders = ref(props.preloadersTable);
-console.log(preloaders.value.store);
-onMounted(() => {});
 
 watch(
   () => props.tableData,
@@ -121,8 +90,6 @@ watch(
 );
 
 const addModal = ref(false);
-const modalRemove = ref(false);
-const itemToRemove = ref({});
 const rows = ref(props.tableData);
 
 const store = async (data = null) => {
@@ -131,25 +98,6 @@ const store = async (data = null) => {
 
 const destroy = (item) => {
   emit("destroyItem", item);
-};
-
-const onUpdateTitle = (value, row) => {
-  row.title = value;
-};
-
-const update = async (row, field) => {
-  console.log("+++", row, field, "+++");
-  if (row[field]) {
-    emit("updateItem", row, field);
-  } else {
-    console.warn("Поле не должно быть пустым.");
-  }
-};
-
-const prepareForRemove = (item) => {
-  itemToRemove.value = item;
-  modalRemove.value = true;
-  console.log(itemToRemove.value);
 };
 </script>
 <style lang="css"></style>

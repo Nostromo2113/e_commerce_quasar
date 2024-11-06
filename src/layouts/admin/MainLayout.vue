@@ -1,25 +1,28 @@
 <template>
   <q-layout view="hHh LpR lff">
     <q-header elevated class="bg-primary text-white" height-hint="98">
-      <q-toolbar>
-        <q-toolbar-title class="text-center-y">
-          <q-btn
-            v-if="false"
-            dense
-            flat
-            round
-            icon="menu"
-            @click="toggleLeftDrawer"
-          />
-          <q-avatar>
-            <q-icon name="admin_panel_settings" size="30px" />
-          </q-avatar>
-          Кабинет администратора
-        </q-toolbar-title>
-        <q-tabs v-for="(menuItem, index) in menuList" :key="index">
-          <q-route-tab :to="menuItem.path">{{ menuItem.label }}</q-route-tab>
-        </q-tabs>
-      </q-toolbar>
+      <div class="main-container">
+        <q-toolbar>
+          <q-toolbar-title class="text-center-y">
+            <q-btn
+              v-if="false"
+              dense
+              flat
+              round
+              icon="menu"
+              @click="toggleLeftDrawer"
+            />
+            <q-avatar>
+              <q-icon name="admin_panel_settings" size="30px" />
+            </q-avatar>
+            Кабинет администратора
+          </q-toolbar-title>
+
+          <q-tabs v-for="(menuItem, index) in menuList" :key="index">
+            <q-route-tab :to="menuItem.path">{{ menuItem.label }}</q-route-tab>
+          </q-tabs>
+        </q-toolbar>
+      </div>
     </q-header>
     <q-drawer v-model="leftDrawerOpen" :breakpoint="700" :width="200" bordered>
       <q-scroll-area class="fit">
@@ -119,11 +122,6 @@ const menuList = [
     label: "Жанры",
     path: { name: "admin.genre" },
   },
-  // {
-  //   icon: "palette",
-  //   label: "Цвета",
-  //   path: { name: "admin.color" },
-  // },
 ];
 </script>
 

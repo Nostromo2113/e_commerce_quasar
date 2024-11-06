@@ -1,7 +1,8 @@
 import { api } from "src/boot/axios";
 
-export const getData = async (path, id = null, query = null) => {
+export const getData = async (path, query = null, id = null) => {
   const adminPath = `admin/${path}`;
+  console.log("crud", path, id, query);
   let count = 0;
   try {
     console.log(query);

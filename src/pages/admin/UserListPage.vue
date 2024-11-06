@@ -2,7 +2,7 @@
   <user-table
     v-if="preloaders.table"
     :preloadersTable="preloadersTable"
-    :columns="columns"
+    :columns="usersColumns"
     :table-pagination="tablePagination"
     tableTitle="Пользователи"
     :table-data="rows"
@@ -31,6 +31,7 @@ import {
   destroyData,
   storeData,
 } from "src/utils/crud/baseCrud";
+import { usersColumns } from "src/constants/tables_columns/usersColumns";
 
 const $q = useQuasar();
 
@@ -45,83 +46,6 @@ const preloadersTable = ref({
   edit: false,
   destroy: false,
 });
-
-const columns = [
-  {
-    name: "show",
-    label: "Подробнее",
-    align: "center",
-    field: "show",
-  },
-  {
-    name: "id",
-    label: "id в БД",
-    align: "left",
-    field: "id",
-    sortable: true,
-  },
-  {
-    name: "avatar",
-    label: "avatar",
-    align: "center",
-    field: "avatar",
-  },
-  {
-    name: "email",
-    label: "email",
-    align: "center",
-    field: "email",
-    sortable: true,
-  },
-  {
-    name: "name",
-    label: "Имя",
-    align: "center",
-    field: "name",
-    sortable: true,
-  },
-  {
-    name: "surname",
-    label: "Фамилия",
-    align: "center",
-    field: "surname",
-    sortable: true,
-  },
-  {
-    name: "patronymic",
-    label: "Отчество",
-    align: "center",
-    field: "patronymic",
-    sortable: true,
-  },
-  {
-    name: "age",
-    label: "Возраст",
-    align: "center",
-    field: "age",
-    sortable: true,
-  },
-  {
-    name: "gender",
-    label: "Пол",
-    align: "center",
-    field: "gender",
-    sortable: true,
-  },
-  {
-    name: "address",
-    label: "Адрес",
-    align: "center",
-    field: "address",
-    sortable: true,
-  },
-  {
-    name: "destroy",
-    label: "удалить",
-    align: "right",
-    field: "destroy",
-  },
-];
 
 const tablePagination = ref({
   page: 1,
