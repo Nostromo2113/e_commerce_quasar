@@ -84,28 +84,11 @@
         </q-tr>
       </template>
     </q-table>
-    <q-dialog v-model="createModal" persistent full-width>
-      <user-form
-        :preloader="preloadersTable.store"
-        title="Добавить пользователя"
-        @store-item="store"
-      ></user-form>
-    </q-dialog>
-    <q-dialog v-model="editModal" persistent full-width>
-      <user-form
-        :preloader="preloadersTable.update"
-        title="Редактировать пользователя"
-        :data="editRow"
-        operation="update"
-        @update-item="update"
-      ></user-form>
-    </q-dialog>
   </div>
 </template>
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import UserForm from "../forms/UserForm.vue";
 import SearchForm from "../forms/SearchForm.vue";
 import { defineEmits } from "vue";
 
@@ -113,104 +96,9 @@ const emit = defineEmits([
   "getItem",
   "storeItem",
   "updateItem",
-  "destroyItem",
   "addSelectedItems",
   "getSearchItems",
 ]);
-
-const router = useRouter();
-const navigateToProduct = (productId) => {
-  if (!props.checkboxes) {
-    router.push({ name: "admin.product.show", params: { productId } });
-  }
-};
-
-const navigateToCreateProduct = () => {
-  if (!props.checkboxes) {
-    router.push({ name: "admin.product.create" });
-  }
-};
-
-const columns = [
-  {
-    name: "addToOrder",
-    label: "Добавить в заказ",
-    align: "center",
-    field: "addToOrder",
-  },
-  {
-    name: "preview_image",
-    label: "Эскиз",
-    align: "center",
-    field: "preview_image",
-  },
-  {
-    name: "id",
-    label: "id в БД",
-    align: "left",
-    field: "id",
-    sortable: true,
-  },
-  {
-    name: "title",
-    label: "Продукт",
-    align: "center",
-    field: "title",
-    sortable: true,
-  },
-  {
-    name: "description",
-    label: "Описание",
-    align: "center",
-    field: "description",
-    sortable: true,
-  },
-  {
-    name: "publisher",
-    label: "Издатель",
-    align: "center",
-    field: "publisher",
-    sortable: true,
-  },
-  {
-    name: "release_date",
-    label: "Дата выхода",
-    align: "center",
-    filed: "release_date",
-    sortable: true,
-  },
-
-  {
-    name: "price",
-    label: "Цена",
-    align: "center",
-    filed: "price",
-  },
-  {
-    name: "amount",
-    label: "Количество на складе",
-    align: "center",
-    filed: "amount",
-  },
-  {
-    name: "is_published",
-    label: "Опубликован",
-    align: "center",
-    filed: "is_published",
-  },
-];
-const getSearchItems = (query) => {
-  emit("getSearchItems", query);
-};
-
-const selectedProducts = ref([]);
-const addSelectedProducts = (selectedProducts) => {
-  console.log("доч", selectedProducts);
-  emit("addSelectedItems", "products", selectedProducts);
-  selectedProducts.value = [];
-};
-
-const filteredColumns = ref([]);
 
 const props = defineProps({
   tableTitle: {
@@ -224,9 +112,6 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  preloadersTable: {
-    type: Object,
-  },
   createButton: {
     type: Boolean,
     default: true,
@@ -235,87 +120,60 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  columns: {
+    type: Array,
+    default: () => [],
+  },
 });
 
-const getImageUrl = (imagePath) => {
-  return `${import.meta.env.VITE_APP_API_URL}/storage/${imagePath}`;
-};
-const preloaders = ref(false);
+const router = useRouter();
 const rows = ref([]);
-console.log(preloaders.value.store);
-onMounted(() => {
-  props?.preloadersTable
-    ? (preloaders.value = props?.preloadersTable)
-    : (preloaders.value = false);
-  props?.tableData ? (rows.value = props.tableData) : (rows.value = []);
+const filteredColumns = ref([]);
+const selectedProducts = ref([]);
 
-  defineColumnStructure(columns, props.checkboxes);
-});
+const navigateToProduct = (productId) => {
+  if (!props.checkboxes) {
+    router.push({ name: "admin.product.show", params: { productId } });
+  }
+};
+const navigateToCreateProduct = () => {
+  if (!props.checkboxes) {
+    router.push({ name: "admin.product.create" });
+  }
+};
 
 const defineColumnStructure = (columns, checkboxes) => {
   if (!checkboxes) {
-    console.log("check");
     filteredColumns.value = columns.filter((el) => el.name !== "addToOrder");
-    console.log(filteredColumns.value);
   } else {
     filteredColumns.value = columns;
   }
 };
 
+const getSearchItems = (query) => {
+  emit("getSearchItems", query);
+};
+
+const addSelectedProducts = (selectedProducts) => {
+  emit("addSelectedItems", selectedProducts);
+  selectedProducts.value = [];
+};
+
+const getImageUrl = (imagePath) => {
+  return `${import.meta.env.VITE_APP_API_URL}/storage/${imagePath}`;
+};
+
+onMounted(() => {
+  defineColumnStructure(props.columns, props.checkboxes);
+});
+
 watch(
   () => props.tableData,
   (newVal) => {
-    rows.value = [...newVal];
-  }
+    console.log("NEWVAL");
+    rows.value = newVal;
+  },
+  { immediate: true }
 );
-
-const editModal = ref(false);
-const editRow = ref({});
-const createModal = ref(false);
-
-const store = async (data) => {
-  emit("storeItem", { ...data });
-};
-
-const destroy = (item) => {
-  emit("destroyItem", item);
-};
-
-const update = async (data) => {
-  console.log("data user", data);
-  emit("updateItem", { ...data });
-};
 </script>
 <style lang="css"></style>
-
-<!--
-<q-dialog v-model="modalRemove" persistent>
-  <q-card>
-    <q-card-section class="row items-center">
-      <span class="text-h6"
-        >Удалить пользователя: <strong>{{ itemToRemove.name }}</strong
-        >?</span
-      >
-    </q-card-section>
-    <q-card-actions align="right">
-      <q-btn flat label="Нет" color="primary" v-close-popup></q-btn>
-      <q-btn
-        @click="destroy(itemToRemove)"
-        flat
-        label="Да"
-        color="negative"
-        v-close-popup
-      ></q-btn>
-    </q-card-actions>
-  </q-card>
-  <confirmation-card :itemTitle="itemToRemove.name" />
-</q-dialog> -->
-
-<!-- const modalRemove = ref(false);
-const itemToRemove = ref({}); -->
-
-<!-- const prepareForRemove = (item) => {
-  itemToRemove.value = item;
-  modalRemove.value = true;
-  console.log(itemToRemove.value);
-}; -->

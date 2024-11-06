@@ -74,7 +74,7 @@ import { onMounted, ref, watch } from "vue";
 import { defineEmits } from "vue";
 import ConfirmationCard from "../ConfirmationCard.vue";
 import DefaultForm from "../forms/DefaultForm.vue";
-const emit = defineEmits(["getItem", "storeItem", "updateItem", "destroyItem"]);
+const emit = defineEmits(["storeItem", "updateItem", "destroyItem"]);
 
 const props = defineProps({
   tableTitle: {

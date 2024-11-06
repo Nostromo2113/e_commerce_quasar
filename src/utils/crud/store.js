@@ -27,7 +27,7 @@ export const storeData = async (path, data, file) => {
   }
 
   try {
-    console.log("отправлояем", requestData);
+    console.log("отправляем", requestData);
     const response = await api.post(`admin/${path}`, requestData, {
       headers: {
         "Content-Type": "multipart/form-data",

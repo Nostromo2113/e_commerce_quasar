@@ -1,10 +1,9 @@
 <template>
-  <q-toolbar>
+  <q-toolbar v-if="breadcrumbs.length > 0">
     <ol class="breadcrumbs" v-for="(item, index) in breadcrumbs" :key="index">
       <li class="breadcrumb-item">
         <div>
           <RouterLink
-            v-if="item.link"
             :to="item.link"
             class="breadcrumb-link"
             :class="{ 'breadcrumb-item-active': item.link == route.fullPath }"

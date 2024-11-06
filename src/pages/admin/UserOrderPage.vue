@@ -126,10 +126,6 @@ const columns = [
 const path = "users";
 const route = useRoute();
 const userId = route.params.userId;
-
-const editModal = ref(false);
-const editUser = ref({});
-
 const user = ref({});
 const orders = ref([]);
 const comments = ref([]);
@@ -156,7 +152,7 @@ const getUser = async (id) => {
   orders.value = user.value.orders;
   console.log("GET", user.value);
 };
-const getComments = async (id, query = null) => {
+const getComments = async (query = null, id) => {
   const response = await getData("comments", id, query);
   comments.value = response;
 };
@@ -212,22 +208,5 @@ const toggleTable = (table) => {
     tableTitle.value.tab = table;
   }
 };
-toggleTable("active");
 </script>
 <style lang=""></style>
-
-<!-- <q-item-section avatar>
-          <q-avatar size="54px">
-            <img src="/images/default_avatar.jpg" />
-          </q-avatar>
-        </q-item-section> -->
-
-<!--
-<q-dialog v-model="editModal" persistent full-width>
-  <form-user
-    title="Редактировать пользователя"
-    :data="editUser"
-    operation="update"
-    @update-item="updateUser"
-  ></form-user>
-</q-dialog> -->
