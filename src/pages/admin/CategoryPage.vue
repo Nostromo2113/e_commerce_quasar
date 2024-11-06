@@ -4,7 +4,7 @@
     :preloadersTable="preloadersTable"
     :columns="columns"
     :table-pagination="tablePagination"
-    tableTitle="Теги"
+    tableTitle="Категории"
     :table-data="rows"
     @getItem="getData"
     @destroyItem="destroyCategory"
@@ -21,7 +21,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import TableAdmin from "src/components/admin_blocks/TableAdmin.vue";
+import TableAdmin from "src/components/admin_blocks/tables/DefaultTable.vue";
 import { useQuasar } from "quasar";
 import {
   getData,
@@ -30,9 +30,9 @@ import {
   storeData,
 } from "src/utils/crud/baseCrud";
 
-const $q = useQuasar();
+const basePath = "categories";
 
-const path = "tags";
+const $q = useQuasar();
 
 const preloaders = ref({
   table: false,
@@ -43,7 +43,6 @@ const preloadersTable = ref({
   edit: false,
   destroy: false,
 });
-
 const columns = [
   {
     name: "id",
@@ -54,7 +53,7 @@ const columns = [
   },
   {
     name: "title",
-    label: "Тег",
+    label: "Категория",
     align: "center",
     field: "title",
     sortable: true,
@@ -82,9 +81,9 @@ const rows = ref([]);
 
 const storeCategory = async (data) => {
   preloadersTable.value.store = true;
-  const response = await storeData(path, data);
+  const response = await storeData(basePath, data);
   preloadersTable.value.store = false;
-  getTags();
+  getCategories(basePath);
   console.log(response.status);
   showStoreNotification(response.status, data.title);
 };
@@ -92,12 +91,12 @@ const storeCategory = async (data) => {
 const showStoreNotification = (status, title) => {
   if (status === 201) {
     $q.notify({
-      message: `Тег "${title}" успешно добавлен'`,
+      message: `Категория "${title}" успешно добавлен'`,
       color: "positive",
     });
   } else if (status === 409) {
     $q.notify({
-      message: `Тег "${title}" уже есть в базе`,
+      message: `Категория "${title}" уже есть в базе`,
       color: "negative",
     });
   } else {
@@ -109,6 +108,7 @@ const showStoreNotification = (status, title) => {
 };
 
 const destroyCategory = async (item) => {
+  console.log(item);
   const notification = $q.notify({
     spinner: true,
     message: "Please wait...",
@@ -117,7 +117,7 @@ const destroyCategory = async (item) => {
   });
   try {
     await destroyData(path, item);
-    getTags();
+    getTags(path);
     notification();
   } catch (error) {
     console.error("Удаление не произошло");
@@ -139,11 +139,17 @@ const updateCategory = async (row, field) => {
       timeout: 0,
       position: "center",
     });
+    const categoryPath = `categories/${row.id}`;
+    const data = {
+      id: row.id,
+      title: row.title,
+    };
     try {
-      await updateData(path, row, field);
+      await updateData(categoryPath, data);
       notification();
-      getTags();
+      getCategories(basePath);
     } catch (error) {
+      console.log(error);
       notification();
       $q.notify({
         message: "Ошибка записи",
@@ -157,15 +163,15 @@ const updateCategory = async (row, field) => {
   }
 };
 
-const getTags = async () => {
+const getCategories = async (path) => {
   try {
-    rows.value = await getData("tags");
+    rows.value = await getData(path);
     preloaders.value.table = true;
   } catch (error) {
     console.error("Error fetching data:", error);
     preloaders.value.table = false;
   }
 };
-getTags();
+getCategories(basePath);
 </script>
 <style lang=""></style>

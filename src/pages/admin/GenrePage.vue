@@ -1,16 +1,16 @@
 <template>
-  <TableUser
+  <TableAdmin
     v-if="preloaders.table"
     :preloadersTable="preloadersTable"
     :columns="columns"
     :table-pagination="tablePagination"
-    tableTitle="Теги"
+    tableTitle="Жанры"
     :table-data="rows"
-    @getItem="getData"
-    @destroyItem="destroyCategory"
-    @storeItem="storeCategory"
-    @updateItem="updateCategory"
-  ></TableUser>
+    @getItem="getGenres"
+    @destroyItem="destroyGenre"
+    @storeItem="storeGenre"
+    @updateItem="updateGenre"
+  ></TableAdmin>
   <div v-if="!preloaders.table" class="col flex-center">
     <q-spinner-grid
       color="primary"
@@ -21,7 +21,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import TableUser from "src/components/admin_blocks/TableUser.vue";
+import TableAdmin from "src/components/admin_blocks/tables/DefaultTable.vue";
 import { useQuasar } from "quasar";
 import {
   getData,
@@ -32,7 +32,7 @@ import {
 
 const $q = useQuasar();
 
-const path = "users";
+const path = "genres";
 
 const preloaders = ref({
   table: false,
@@ -46,12 +46,6 @@ const preloadersTable = ref({
 
 const columns = [
   {
-    name: "edit",
-    label: "Редактировать",
-    align: "center",
-    field: "edit",
-  },
-  {
     name: "id",
     label: "id в БД",
     align: "left",
@@ -59,52 +53,10 @@ const columns = [
     sortable: true,
   },
   {
-    name: "email",
-    label: "email",
+    name: "title",
+    label: "Жанр",
     align: "center",
-    field: "email",
-    sortable: true,
-  },
-  {
-    name: "name",
-    label: "Имя",
-    align: "center",
-    field: "name",
-    sortable: true,
-  },
-  {
-    name: "surname",
-    label: "Фамилия",
-    align: "center",
-    field: "surname",
-    sortable: true,
-  },
-  {
-    name: "patronymic",
-    label: "Отчество",
-    align: "center",
-    field: "patronymic",
-    sortable: true,
-  },
-  {
-    name: "age",
-    label: "Возраст",
-    align: "center",
-    field: "age",
-    sortable: true,
-  },
-  {
-    name: "gender",
-    label: "Пол",
-    align: "center",
-    field: "gender",
-    sortable: true,
-  },
-  {
-    name: "address",
-    label: "Адрес",
-    align: "center",
-    field: "address",
+    field: "title",
     sortable: true,
   },
   {
@@ -121,11 +73,11 @@ const tablePagination = ref({
 });
 const rows = ref([]);
 
-const storeCategory = async (data) => {
+const storeGenre = async (data) => {
   preloadersTable.value.store = true;
   const response = await storeData(path, data);
   preloadersTable.value.store = false;
-  getTags();
+  getGenres();
   console.log(response.status);
   showStoreNotification(response.status, data.title);
 };
@@ -149,7 +101,7 @@ const showStoreNotification = (status, title) => {
   }
 };
 
-const destroyCategory = async (item) => {
+const destroyGenre = async (item) => {
   const notification = $q.notify({
     spinner: true,
     message: "Please wait...",
@@ -158,7 +110,7 @@ const destroyCategory = async (item) => {
   });
   try {
     await destroyData(path, item);
-    getTags();
+    getGenres();
     notification();
   } catch (error) {
     console.error("Удаление не произошло");
@@ -172,38 +124,48 @@ const destroyCategory = async (item) => {
   }
 };
 
-const updateCategory = async (row) => {
-  const notification = $q.notify({
-    spinner: true,
-    message: "Запись в базу данных",
-    timeout: 0,
-    position: "center",
-  });
-  try {
-    await updateData(path, row);
-    notification();
-    getTags();
-  } catch (error) {
-    notification();
-    $q.notify({
-      message: "Ошибка записи",
+const updateGenre = async (row, field) => {
+  console.log(row, field);
+  const path = `genres/${row.id}`;
+  if (row[field]) {
+    const notification = $q.notify({
+      spinner: true,
+      message: "Запись в базу данных",
+      timeout: 0,
       position: "center",
-      color: "negative",
-      timeout: 2000,
     });
+    const data = {
+      id: row.id,
+      title: row.title,
+    };
+    try {
+      await updateData(path, data);
+      notification();
+      getGenres();
+    } catch (error) {
+      notification();
+      $q.notify({
+        message: "Ошибка записи",
+        position: "center",
+        color: "negative",
+        timeout: 2000,
+      });
+      console.error(error);
+    }
+  } else {
+    console.warn("Поле не должно быть пустым.");
   }
 };
 
-const getTags = async () => {
+const getGenres = async () => {
   try {
     rows.value = await getData(path);
-    console.log("USERS", rows.value);
     preloaders.value.table = true;
   } catch (error) {
     console.error("Error fetching data:", error);
     preloaders.value.table = false;
   }
 };
-getTags();
+getGenres();
 </script>
 <style lang=""></style>

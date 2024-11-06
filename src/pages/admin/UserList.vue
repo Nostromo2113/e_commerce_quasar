@@ -1,27 +1,29 @@
 <template>
-  <table-color
-    v-if="preloaderTitle"
+  <user-table
+    v-if="preloaders.table"
     :preloadersTable="preloadersTable"
     :columns="columns"
     :table-pagination="tablePagination"
-    tableTitle="Цвета"
+    tableTitle="Пользователи"
     :table-data="rows"
+    createButton
     @getItem="getData"
     @destroyItem="destroyCategory"
     @storeItem="storeCategory"
     @updateItem="updateCategory"
-  ></table-color>
-  <div v-if="!preloaderTitle" class="col flex-center">
+  ></user-table>
+  <div v-if="!preloaders.table" class="col flex-center">
     <q-spinner-grid
       color="primary"
       size="12em"
       class="q-mx-auto"
     ></q-spinner-grid>
   </div>
+  <RouterView></RouterView>
 </template>
 <script setup>
 import { ref } from "vue";
-import TableColor from "src/components/admin_blocks/TableColor.vue";
+import UserTable from "src/components/admin_blocks/tables/UserTable.vue";
 import { useQuasar } from "quasar";
 import {
   getData,
@@ -32,9 +34,9 @@ import {
 
 const $q = useQuasar();
 
-const path = "colors";
+const path = "users";
 
-const preloaderTitle = ref({
+const preloaders = ref({
   table: false,
 });
 
@@ -46,6 +48,12 @@ const preloadersTable = ref({
 
 const columns = [
   {
+    name: "show",
+    label: "Подробнее",
+    align: "center",
+    field: "show",
+  },
+  {
     name: "id",
     label: "id в БД",
     align: "left",
@@ -53,29 +61,58 @@ const columns = [
     sortable: true,
   },
   {
-    name: "title",
-    label: "Цвет",
+    name: "avatar",
+    label: "avatar",
     align: "center",
-    field: "title",
+    field: "avatar",
+  },
+  {
+    name: "email",
+    label: "email",
+    align: "center",
+    field: "email",
     sortable: true,
   },
   {
-    name: "hex",
-    label: "hex",
+    name: "name",
+    label: "Имя",
     align: "center",
-    field: "hex",
+    field: "name",
+    sortable: true,
   },
   {
-    name: "display",
-    label: "Отображать",
+    name: "surname",
+    label: "Фамилия",
     align: "center",
-    field: "display",
+    field: "surname",
+    sortable: true,
   },
   {
-    name: "used",
-    label: "Используется",
+    name: "patronymic",
+    label: "Отчество",
     align: "center",
-    field: "used",
+    field: "patronymic",
+    sortable: true,
+  },
+  {
+    name: "age",
+    label: "Возраст",
+    align: "center",
+    field: "age",
+    sortable: true,
+  },
+  {
+    name: "gender",
+    label: "Пол",
+    align: "center",
+    field: "gender",
+    sortable: true,
+  },
+  {
+    name: "address",
+    label: "Адрес",
+    align: "center",
+    field: "address",
     sortable: true,
   },
   {
@@ -93,28 +130,32 @@ const tablePagination = ref({
 const rows = ref([]);
 
 const storeCategory = async (data) => {
-  preloadersTable.value.store = true;
-  const response = await storeData(path, data);
-  preloadersTable.value.store = false;
-  getTags();
-  console.log(response.status);
-  showStoreNotification(response.status, data.title);
+  try {
+    preloadersTable.value.store = true;
+    const response = await storeData(path, data);
+    preloadersTable.value.store = false;
+    getTags();
+    console.log(response.status);
+    showStoreNotification(response.status, data.title);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const showStoreNotification = (status, title) => {
   if (status === 201) {
     $q.notify({
-      message: `Цвет "${title}" успешно добавлен'`,
+      message: `Тег "${title}" успешно добавлен'`,
       color: "positive",
     });
   } else if (status === 409) {
     $q.notify({
-      message: `Цвет "${title}" уже есть в базе`,
+      message: `Тег "${title}" уже есть в базе`,
       color: "negative",
     });
   } else {
     $q.notify({
-      message: `Ошибка добавления цвета`,
+      message: `Ошибка добавления тега`,
       color: "negative",
     });
   }
@@ -143,16 +184,15 @@ const destroyCategory = async (item) => {
   }
 };
 
-const updateCategory = async (data) => {
+const updateCategory = async (row) => {
   const notification = $q.notify({
     spinner: true,
     message: "Запись в базу данных",
     timeout: 0,
     position: "center",
   });
-  console.log("admin", data);
   try {
-    await updateData(path, data);
+    await updateData(path, row);
     notification();
     getTags();
   } catch (error) {
@@ -169,8 +209,8 @@ const updateCategory = async (data) => {
 const getTags = async () => {
   try {
     rows.value = await getData(path);
-    console.log(rows.value);
-    preloaderTitle.value.table = true;
+    console.log("USERS", rows.value);
+    preloaders.value.table = true;
   } catch (error) {
     console.error("Error fetching data:", error);
     preloaders.value.table = false;

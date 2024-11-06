@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div class="q-pa-md">
+    <div class="text-subtitle1 text-h2 text-grey">
+      Вы можете редактировать данные прямо в таблице
+    </div>
     <q-table
       :title="tableTitle"
       :rows="rows"
@@ -7,7 +10,7 @@
       :pagination="tablePagination"
       row-key="title"
       flat
-      class="q-pa-md"
+      bordered
     >
       <template v-slot:top-right>
         <q-btn
@@ -20,13 +23,10 @@
 
       <template v-slot:body="props">
         <q-tr :props="props">
-          <q-td key="edit" :props="props">
-            <q-icon name="edit"></q-icon>
-          </q-td>
           <q-td key="id" :props="props">
             {{ props.row.id }}
           </q-td>
-          <q-td key="title" :props="props">
+          <q-td key="title" :props="props" class="bg-accent">
             <q-input
               :model-value="props.row.title"
               @update:model-value="(val) => onUpdateTitle(val, props.row)"
@@ -37,44 +37,13 @@
             >
             </q-input>
           </q-td>
-          <q-td key="hex" :props="props">
-            <q-input
-              :model-value="props.row.hex"
-              @update:model-value="(val) => onUpdateHex(val, props.row)"
-              @blur="update(props.row, 'hex')"
-              dense
-              borderless
-              input-style="text-align: center"
-            >
-            </q-input>
-          </q-td>
-          <q-td key="display" :props="props">
-            <button
-              class="default-btn"
-              style="height: 15px; width: 15px; border: 1px solid silver"
-              :style="{ backgroundColor: props.row.hex }"
-            >
-              <q-menu @blur="update(props.row, 'hex')">
-                <q-card>
-                  <q-color
-                    :model-value="props.row.hex"
-                    @update:model-value="(val) => onUpdateHex(val, props.row)"
-                    no-header
-                    no-footer
-                    default-view="palette"
-                    class="my-picker"
-                  ></q-color>
-                </q-card>
-              </q-menu>
-            </button>
-          </q-td>
           <q-td key="used" :props="props">
             {{ props?.row?.used ? props.row.used : "Нет данных" }}
           </q-td>
           <q-td key="destroy" :props="props">
             <q-btn
               icon="close"
-              flat
+              color="accent"
               @click="prepareForRemove(props.row)"
             ></q-btn>
           </q-td>
@@ -87,39 +56,24 @@
       aria-labelledby="remove-dialog-title"
       aria-describedby="remove-dialog-description"
     >
-      <q-card>
-        <q-card-section class="row items-center">
-          <span class="text-h6"
-            >Удалить категорию: <strong>{{ itemToRemove.title }}</strong
-            >?</span
-          >
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Нет" color="primary" v-close-popup></q-btn>
-          <q-btn
-            @click="destroy(itemToRemove)"
-            flat
-            label="Да"
-            color="negative"
-            v-close-popup
-          ></q-btn>
-        </q-card-actions>
-      </q-card>
+      <ConfirmationCard
+        :itemTitle="itemToRemove.title"
+        @confirm="destroy(itemToRemove)"
+      />
     </q-dialog>
     <q-dialog v-model="addModal" persistent>
-      <form-color
+      <default-form
         :preloader="preloadersTable.store"
         @storeItem="store"
-      ></form-color>
+      ></default-form>
     </q-dialog>
   </div>
 </template>
 <script setup>
 import { onMounted, ref, watch } from "vue";
-import FormColor from "./FormColor.vue";
 import { defineEmits } from "vue";
-
+import ConfirmationCard from "../ConfirmationCard.vue";
+import DefaultForm from "../forms/DefaultForm.vue";
 const emit = defineEmits(["getItem", "storeItem", "updateItem", "destroyItem"]);
 
 const props = defineProps({
@@ -140,6 +94,8 @@ const props = defineProps({
     type: Object,
   },
 });
+console.log(props.columns);
+const responseStatus = ref(props.responses);
 
 const preloaders = ref(props.preloadersTable);
 console.log(preloaders.value.store);
@@ -154,7 +110,6 @@ watch(
 
 const addModal = ref(false);
 const modalRemove = ref(false);
-const modalColor = ref(false);
 const itemToRemove = ref({});
 const rows = ref(props.tableData);
 
@@ -170,19 +125,10 @@ const onUpdateTitle = (value, row) => {
   row.title = value;
 };
 
-const onUpdateHex = (value, row) => {
-  row.hex = value;
-};
-
-const update = async (row) => {
-  console.log("HEX");
-  const data = {
-    id: row.id,
-    title: row.title,
-    hex: row.hex,
-  };
-  if (data.title && data.hex) {
-    emit("updateItem", { ...data });
+const update = async (row, field) => {
+  console.log("+++", row, field, "+++");
+  if (row[field]) {
+    emit("updateItem", row, field);
   } else {
     console.warn("Поле не должно быть пустым.");
   }

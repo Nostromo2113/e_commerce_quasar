@@ -75,30 +75,6 @@
             ]"
             style="flex: 1"
           ></q-input>
-          <q-input
-            v-model="formData.password"
-            label="Пароль"
-            type="password"
-            filled
-            lazy-rules
-            style="flex: 1"
-            :rules="[
-              (val) =>
-                (val && val.length > 0) || 'Поле обязательно для заполнения',
-            ]"
-          ></q-input>
-          <q-input
-            v-model="formData.password_confirmation"
-            label="Пароль"
-            type="password"
-            filled
-            lazy-rules
-            style="flex: 1"
-            :rules="[
-              (val) =>
-                (val && val.length > 0) || 'Поле обязательно для заполнения',
-            ]"
-          ></q-input>
         </div>
         <div class="row items-center justify-between gap-10">
           <q-input
@@ -127,6 +103,10 @@
             style="flex: 1"
           ></q-select>
         </div>
+        <span v-if="operation === 'store'"
+          >Пользователю будет отправлено письмо с паролем и ссылкой для
+          верификации</span
+        >
         <q-separator></q-separator>
         <q-toggle
           v-model="accept"
@@ -139,7 +119,7 @@
         <div>
           <q-btn label="Отправить" type="submit" color="primary"></q-btn>
           <q-btn
-            v-if="clear"
+            v-if="operation === 'store'"
             label="Очистить"
             type="reset"
             color="primary"
@@ -173,10 +153,6 @@ const props = defineProps({
   data: {
     type: Object,
   },
-  clear: {
-    type: Boolean,
-    default: true,
-  },
   operation: {
     type: String,
     default: "store",
@@ -187,30 +163,27 @@ const data = props.data;
 
 const options = ["Мужской", "Женский"];
 
-console.log("preload", props.preloader);
-
 import { ref, watch } from "vue";
 const formData = ref({
   email: "",
   name: "",
   surname: "",
   patronymic: "",
-  age: data ? data.age : null,
+  age: null,
   gender: "",
   address: "",
-  password: "",
   password_confirmation: "",
 });
 
 const getData = (data) => {
   if (data) {
     formData.value = data;
+    console.log(data);
   }
 };
 
 onMounted(() => {
   getData(data);
-  console.log(formData.value);
 });
 const accept = ref(false);
 
@@ -224,8 +197,6 @@ const submit = async () => {
     age: formData.value.age,
     gender: formData.value.gender === "Мужской" ? 1 : 2,
     address: formData.value.address,
-    password: formData.value.password,
-    password_confirmation: formData.value.password_confirmation,
   };
   if (accept.value) {
     props.operation === "store"
@@ -234,7 +205,7 @@ const submit = async () => {
     accept.value = false;
     !props.operation ? resetData() : null;
   } else {
-    console.error("Подтвердите добавление в БД");
+    console.warn("Подтвердите добавление в БД");
   }
 };
 
@@ -254,7 +225,6 @@ const resetData = () => {
 watch(
   () => props.preloader,
   (newVal) => {
-    console.log("ватч прелоадер");
     storePreloader.value = newVal;
   }
 );

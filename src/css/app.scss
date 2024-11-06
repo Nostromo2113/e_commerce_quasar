@@ -23,10 +23,29 @@
   cursor: pointer;
 }
 
-.full-width {
+.width-100 {
   width: 100%;
 }
 
 .gap-10 {
   gap: 10px;
+}
+
+.reset-input {
+  all: unset; /* Сбрасывает все стили элемента */
+  box-shadow: none; /* Убираем тень */
+  border: none; /* Убираем границу */
+  background-color: transparent; /* Убираем фоновый цвет */
+  padding: 0; /* Убираем отступы */
+  margin: 0; /* Убираем внешние отступы */
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Создаем три равные колонки */
+  gap: 10px; /* Расстояние между элементами */
+}
+
+.main-container {
+  width: 1800px;
 }

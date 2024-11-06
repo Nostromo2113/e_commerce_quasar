@@ -2,7 +2,6 @@
   <q-layout view="hHh LpR lff">
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
-        <!--                <q-btn dense flat round icon="menu"/>-->
         <q-toolbar-title class="text-center-y">
           <q-btn
             v-if="false"
@@ -17,19 +16,12 @@
           </q-avatar>
           Кабинет администратора
         </q-toolbar-title>
-        <q-tabs align="left">
-          <q-route-tab :to="{ name: 'admin.index' }" label="Index" />
-          <q-route-tab :to="{ name: 'admin.second' }" label="Second" />
+        <q-tabs v-for="(menuItem, index) in menuList" :key="index">
+          <q-route-tab :to="menuItem.path">{{ menuItem.label }}</q-route-tab>
         </q-tabs>
       </q-toolbar>
     </q-header>
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      :breakpoint="700"
-      :width="200"
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" :breakpoint="700" :width="200" bordered>
       <q-scroll-area class="fit">
         <q-toolbar>
           <q-toolbar-title class="text-dark text-center">
@@ -57,17 +49,15 @@
         </q-list>
       </q-scroll-area>
     </q-drawer>
-
-    <q-page-container>
-      <q-page class="column justify-start">
+    <q-page-container class="column justify-center items-center">
+      <q-page class="main-container column">
+        <bread-crumbs></bread-crumbs>
         <router-view></router-view>
       </q-page>
     </q-page-container>
     <q-footer class="bg-grey-8 text-white">
       <q-toolbar>
-        <q-toolbar-title>
-          <div>Title</div>
-        </q-toolbar-title>
+        <q-toolbar-title> Title </q-toolbar-title>
       </q-toolbar>
     </q-footer>
   </q-layout>
@@ -75,11 +65,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import BreadCrumbs from "src/components/admin_ui/BreadCrumbs.vue";
 
 const router = useRouter();
 const route = useRoute();
 
-const leftDrawerOpen = ref(true);
+const leftDrawerOpen = ref(false);
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 };
@@ -104,12 +95,19 @@ const menuList = [
     path: { name: "admin.index" },
   },
   {
-    icon: "shopping_bag",
-    label: "Заказы",
+    icon: "group",
+    label: "Пользователи",
+    path: { name: "admin.user.list" },
   },
   {
     icon: "local_mall",
     label: "Продукты",
+    path: { name: "admin.product" },
+  },
+  {
+    icon: "shopping_bag",
+    label: "Заказы",
+    path: { name: "admin.order" },
   },
   {
     icon: "category",
@@ -118,19 +116,14 @@ const menuList = [
   },
   {
     icon: "style",
-    label: "Теги",
-    path: { name: "admin.tag" },
+    label: "Жанры",
+    path: { name: "admin.genre" },
   },
-  {
-    icon: "palette",
-    label: "Цвета",
-    path: { name: "admin.color" },
-  },
-  {
-    icon: "group",
-    label: "Пользователи",
-    path: { name: "user.admin" },
-  },
+  // {
+  //   icon: "palette",
+  //   label: "Цвета",
+  //   path: { name: "admin.color" },
+  // },
 ];
 </script>
 
