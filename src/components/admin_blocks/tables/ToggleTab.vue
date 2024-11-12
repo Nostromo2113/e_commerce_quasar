@@ -4,12 +4,14 @@
       @click="toggleTab(firstTab)"
       :name="firstTab"
       :label="props.firstLabel"
+      style="width: 50%"
     ></q-tab>
     <q-tab
       @click="toggleTab(secondTab)"
       :name="secondTab"
       active
       :label="props.secondLabel"
+      style="width: 50%"
     ></q-tab>
   </q-tabs>
 </template>
@@ -43,7 +45,6 @@ const secondTab = props.secondTab;
 const activeSection = ref(props.firstTab);
 
 const toggleTab = (tab) => {
-  console.log(tab);
   activeSection.value = tab;
   emit("toggleTab", tab);
 };

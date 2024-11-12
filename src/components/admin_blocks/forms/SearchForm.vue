@@ -9,16 +9,11 @@
     >
       <template v-slot:append>
         <q-icon
-          name="close"
-          @click="searchQuery = ''"
+          name="search"
           class="cursor-pointer"
+          @click="getSearchItems(searchQuery)"
         ></q-icon> </template
     ></q-input>
-    <q-btn
-      icon="search"
-      color="primary"
-      @click="getSearchItems(searchQuery)"
-    ></q-btn>
   </form>
 </template>
 <script setup>

@@ -1,6 +1,6 @@
 <template lang="">
   <q-card class="q-pa-sm" flat bordered>
-    <div class="q-py-md width-25">
+    <div class="q-py-md">
       <SearchForm @getSearchItems="getComments" />
     </div>
     <div class="grid-container">

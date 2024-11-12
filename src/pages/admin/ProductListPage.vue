@@ -1,12 +1,14 @@
 <template>
-  <ProductTable
-    v-if="preloaders.table"
-    :table-pagination="tablePagination"
-    tableTitle="Продукты"
-    :table-data="rows"
-    :columns="productsColumns"
-    @getSearchItems="(searchQuery) => getSearchItems(basePath, searchQuery)"
-  ></ProductTable>
+  <div class="q-pa-sm fix-width">
+    <ProductTable
+      v-if="preloaders.table"
+      :table-pagination="tablePagination"
+      tableTitle="Продукты"
+      :table-data="rows"
+      :columns="productsColumns"
+      @getSearchItems="(searchQuery) => getSearchItems(basePath, searchQuery)"
+    ></ProductTable>
+  </div>
   <div v-if="!preloaders.table" class="col flex-center">
     <q-spinner-grid
       color="primary"
