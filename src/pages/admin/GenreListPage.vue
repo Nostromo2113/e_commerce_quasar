@@ -1,15 +1,17 @@
 <template>
-  <DefaultTable
-    v-if="preloaders.table"
-    :preloadersTable="preloaders"
-    :columns="genresColumns"
-    :table-pagination="tablePagination"
-    tableTitle="Жанры"
-    :table-data="rows"
-    @destroyItem="(item) => destroyGenre(item, basePath)"
-    @storeItem="(data) => storeGenre(data, basePath)"
-    @updateItem="(row, field) => updateGenre(row, field, basePath)"
-  ></DefaultTable>
+  <div class="q-pa-sm">
+    <DefaultTable
+      v-if="preloaders.table"
+      :preloadersTable="preloaders"
+      :columns="genresColumns"
+      :table-pagination="tablePagination"
+      tableTitle="Жанры"
+      :table-data="rows"
+      @destroyItem="(item) => destroyGenre(item, basePath)"
+      @storeItem="(data) => storeGenre(data, basePath)"
+      @updateItem="(row, field) => updateGenre(row, field, basePath)"
+    ></DefaultTable>
+  </div>
   <div v-if="!preloaders.table" class="col flex-center">
     <q-spinner-grid
       color="primary"
@@ -61,9 +63,9 @@ const storeGenre = async (data, basePath) => {
     getGenres(basePath);
     console.log("rows", rows.value);
   } catch (error) {
-    result = false;
-    console.error(error);
     loadNotification($q, true), resultNotification($q, false);
+    preloaders.value.store = false;
+    console.error(error);
   }
 };
 

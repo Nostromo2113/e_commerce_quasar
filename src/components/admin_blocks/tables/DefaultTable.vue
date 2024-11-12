@@ -1,8 +1,10 @@
 <template>
-  <div class="q-pa-md">
-    <div class="text-subtitle1 text-h2 text-grey">
-      Вы можете редактировать данные прямо в таблице
-    </div>
+  <q-card class="no-shadow" bordered>
+    <q-card-section>
+      <div class="text-h6 text-grey-8">Интерактивная таблица</div>
+    </q-card-section>
+    <q-separator></q-separator>
+    <!--       card-class="bg-blue-grey-1 text-brown fix-width-table" -->
     <q-table
       :title="tableTitle"
       :rows="rows"
@@ -67,7 +69,7 @@
         @storeItem="store"
       ></default-form>
     </q-dialog>
-  </div>
+  </q-card>
 </template>
 <script setup>
 import { onMounted, ref, watch } from "vue";
@@ -94,19 +96,8 @@ const props = defineProps({
     type: Object,
   },
 });
-console.log(props.columns);
-const responseStatus = ref(props.responses);
 
 const preloaders = ref(props.preloadersTable);
-console.log(preloaders.value.store);
-onMounted(() => {});
-
-watch(
-  () => props.tableData,
-  (newVal) => {
-    rows.value = [...newVal];
-  }
-);
 
 const addModal = ref(false);
 const modalRemove = ref(false);
@@ -126,7 +117,6 @@ const onUpdateTitle = (value, row) => {
 };
 
 const update = async (row, field) => {
-  console.log("+++", row, field, "+++");
   if (row[field]) {
     emit("updateItem", row, field);
   } else {
@@ -139,5 +129,12 @@ const prepareForRemove = (item) => {
   modalRemove.value = true;
   console.log(itemToRemove.value);
 };
+
+watch(
+  () => props.tableData,
+  (newVal) => {
+    rows.value = [...newVal];
+  }
+);
 </script>
 <style lang="css"></style>

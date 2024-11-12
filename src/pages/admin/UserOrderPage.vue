@@ -1,5 +1,5 @@
 <template lang="">
-  <div style="min-height: 100vh">
+  <div style="min-height: 100vh" class="fix-width">
     <q-card class="my-card" flat bordered>
       <q-item>
         <q-item-section>
@@ -12,8 +12,7 @@
         </q-item-section>
       </q-item>
       <q-separator></q-separator>
-      <q-card-section horizontal>
-        <q-separator vertical></q-separator>
+      <q-card-section>
         <div class="col">
           <q-toolbar>
             <q-toolbar-title>
@@ -28,7 +27,10 @@
       </q-card-section>
       <q-separator></q-separator>
       <q-card-section class="q-pa-none q-mt-sm">
-        <q-toolbar class="items-center flex justify-end q-py-md">
+        <q-toolbar
+          class="items-center flex justify-end q-py-md"
+          :class="{ column: screenWidth < 650, reverce: screenWidth < 650 }"
+        >
           <q-toolbar-title
             v-if="activeSection === 'orders'"
             class="text-dark text-start"
@@ -53,7 +55,7 @@
             @toggleTab="(tab) => (activeSection = tab)"
           />
         </q-toolbar>
-        <q-card-section v-if="activeSection === 'orders'" class="q-pa-none">
+        <q-card-section v-if="activeSection === 'orders'">
           <TableOrder
             :preloadersTable="preloadersTable"
             :columns="columns"
@@ -83,6 +85,10 @@ import TableOrder from "src/components/admin_blocks/tables/OrderTable.vue";
 import UserComments from "src/components/admin_blocks/UserComments.vue";
 import ToggleTab from "src/components/admin_blocks/tables/ToggleTab.vue";
 import UserShow from "../../components/admin_blocks/blocks/UserShow.vue";
+
+import useScreenWidth from "src/plugins/screenPlugin.js";
+const { screenWidth } = useScreenWidth();
+
 import {
   showData,
   updateData,

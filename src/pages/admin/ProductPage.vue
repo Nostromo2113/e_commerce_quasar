@@ -9,26 +9,36 @@
     /> -->
 
     <q-card class="my-card" flat bordered>
-      <q-card-section class="product-wrapper">
+      <q-card-section
+        class="product-wrapper"
+        :class="{
+          row: screenWidth < 1000,
+          'justify-center': screenWidth < 1000,
+        }"
+      >
         <ImageUpload
           :imageLink="product.preview_image"
           :alt="alt"
           title="Превью изображение"
           @onFileChange="onFileChange"
           @updateAlt="updateAlt"
-          class="col-3"
         />
-        <q-card-section class="col">
+        <q-card-section class="width-100">
           <div class="text-subtitle1 text-h2 text-grey q-pb-sm">
             Основная информация о продукте
           </div>
-          <div class="row items-start q-gutter-md">
+          <div
+            class="items-start q-gutter-md"
+            :class="{
+              row: screenWidth > 1000,
+              'justify-center': screenWidth < 1000,
+            }"
+          >
             <q-input
               label="Название игры"
               class="col"
               v-model="product.title"
               filled
-              style="width: 300px"
             ></q-input>
             <q-select
               class="col"
@@ -53,13 +63,13 @@
           <div class="text-subtitle1 text-grey row q-pb-sm q-pt-md">
             Информация об издателе
           </div>
-          <div class="row q-gutter-md">
+          <div class="q-gutter-md">
             <q-input
               v-model="product.publisher"
               label="Издатель"
               class="col"
-              clearable
               filled
+              :class="{ row: screenWidth > 650 }"
             ></q-input>
             <input-calendar
               v-model="product.release_date"
@@ -98,44 +108,47 @@
             :data="technical_requirements"
             class="col-9"
           ></TechnicalForm>
+          <div class="q-py-md">
+            <q-radio
+              v-model="product.is_published"
+              :val="1"
+              label="Опубликовано"
+              color="positive"
+            ></q-radio>
+            <q-radio
+              v-model="product.is_published"
+              :val="0"
+              label="Не опубликовано"
+              color="negative"
+            ></q-radio>
+          </div>
           <q-card-actions
             align="between"
-            class="justify-between width-100 q-py-xl"
+            :vertical="screenWidth < 650"
+            :class="{
+              column: screenWidth < 650,
+            }"
           >
-            <div class="q-gutter-sm">
-              <q-radio
-                v-model="product.is_published"
-                :val="1"
-                label="Опубликовано"
-                color="positive"
-              ></q-radio>
-              <q-radio
-                v-model="product.is_published"
-                :val="0"
-                label="Не опубликовано"
-                color="negative"
-              ></q-radio>
-            </div>
-            <div class="row q-gutter-xl">
-              <q-btn
-                @click="
-                  productId
-                    ? updateProduct(product, selectedFile)
-                    : storeProduct(product, selectedFile)
-                "
-                outline
-                color="positive"
-                >Применить изменения</q-btn
-              >
-              <q-btn outline color="secondary">Обновить/Сбросить</q-btn>
-              <q-btn
-                v-if="productId"
-                @click="modalRemove = true"
-                outline
-                color="negative"
-                >Удалить продукт</q-btn
-              >
-            </div>
+            <q-btn
+              @click="
+                productId
+                  ? updateProduct(product, selectedFile)
+                  : storeProduct(product, selectedFile)
+              "
+              color="positive"
+              :class="{ 'width-100': screenWidth < 650 }"
+              >Применить изменения</q-btn
+            >
+            <q-btn color="secondary" :class="{ 'width-100': screenWidth < 650 }"
+              >Обновить/Сбросить</q-btn
+            >
+            <q-btn
+              v-if="productId"
+              @click="modalRemove = true"
+              color="negative"
+              :class="{ 'width-100': screenWidth < 650 }"
+              >Удалить продукт</q-btn
+            >
           </q-card-actions>
         </q-card-section>
       </q-card-section>
@@ -168,6 +181,10 @@ import ToggleTab from "src/components/admin_blocks/tables/ToggleTab.vue";
 const $q = useQuasar();
 const router = useRouter();
 const route = useRoute();
+
+import useScreenWidth from "src/plugins/screenPlugin.js";
+const { screenWidth } = useScreenWidth();
+
 /**************************************************/
 
 /****************VARIABLES*************/

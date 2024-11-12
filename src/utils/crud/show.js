@@ -1,4 +1,5 @@
-import { api } from "src/boot/axios";
+import { initAuthApi } from "../api";
+const api = initAuthApi();
 
 export const showData = async (path, id) => {
   const adminPath = `admin/${path}/${id}`;

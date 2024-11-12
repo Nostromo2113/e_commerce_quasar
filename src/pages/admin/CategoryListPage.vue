@@ -1,15 +1,17 @@
 <template>
-  <DefaultTable
-    v-if="preloaders.table"
-    :preloadersTable="preloadersTable"
-    :columns="categoriesColumns"
-    :table-pagination="tablePagination"
-    tableTitle="Категории"
-    :table-data="rows"
-    @destroyItem="(item) => destroyCategory(item, basePath)"
-    @storeItem="(data) => storeCategory(data, basePath)"
-    @updateItem="(row, field) => updateCategory(row, field, basePath)"
-  ></DefaultTable>
+  <div class="q-pa-sm">
+    <DefaultTable
+      v-if="preloaders.table"
+      :preloadersTable="preloadersTable"
+      :columns="categoriesColumns"
+      :table-pagination="tablePagination"
+      tableTitle="Категории"
+      :table-data="rows"
+      @destroyItem="(item) => destroyCategory(item, basePath)"
+      @storeItem="(data) => storeCategory(data, basePath)"
+      @updateItem="(row, field) => updateCategory(row, field, basePath)"
+    ></DefaultTable>
+  </div>
   <div v-if="!preloaders.table" class="col flex-center">
     <q-spinner-grid
       color="primary"

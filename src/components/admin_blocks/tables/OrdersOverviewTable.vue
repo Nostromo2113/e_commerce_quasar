@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-py-md">
     <q-table
       :title="tableTitle"
       :rows="rows"
@@ -8,7 +8,6 @@
       row-key="title"
       bordered
       flat
-      class="q-pa-md"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -107,8 +106,6 @@ const navigateToCreateProduct = () => {
   router.push({ name: "admin.product.create" });
 };
 
-const addModal = ref(false);
-
 const props = defineProps({
   tableTitle: {
     type: String,
@@ -124,10 +121,6 @@ const props = defineProps({
   preloadersTable: {
     type: Object,
   },
-  createButton: {
-    type: Boolean,
-    default: true,
-  },
 });
 
 const getImageUrl = (imagePath) => {
@@ -142,7 +135,7 @@ onMounted(() => {
     ? (preloaders.value = props?.preloadersTable)
     : (preloaders.value = false);
 
-  props?.tableData ? (rows.value = props.tableData) : (rows.value = []);
+  rows.value = props.tableData;
 });
 
 const modalRemove = ref(false);
@@ -157,7 +150,7 @@ const removeFromOrder = async (entity, id) => {
 watch(
   () => props.tableData,
   (newVal) => {
-    rows.value = [...newVal];
+    rows.value = newVal;
   }
 );
 </script>

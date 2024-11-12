@@ -1,5 +1,5 @@
 <template lang="">
-  <div style="min-height: 100vh" class="q-pa-sm">
+  <div style="max-width: 100vw">
     <q-card class="my-card" flat bordered>
       <q-item>
         <q-item-section avatar>
@@ -15,11 +15,14 @@
       </q-item>
       <q-separator></q-separator>
       <q-card-section>
-        <q-separator vertical></q-separator>
-        <q-card-section class="row q-gutter-xl">
-          <div
-            class="col bg-info q-pa-md rounded-borders text-white text-subtitle1"
-          >
+        <div
+          class="row q-gutter-sm"
+          :class="{
+            column: screenWidth < 650,
+            'q-gutter-xl': screenWidth > 650,
+          }"
+        >
+          <div class="col bg-info q-pa-md rounded-borders text-overline">
             <q-item-label
               >Полное имя: {{ user.surname }} {{ user.name }}
               {{ user.patronymic }}</q-item-label
@@ -30,9 +33,7 @@
             <q-item-label>Возраст: {{ user.age }}</q-item-label>
           </div>
           <q-separator vertical></q-separator>
-          <div
-            class="col bg-info q-pa-md rounded-borders text-white text-subtitle1"
-          >
+          <div class="col bg-info q-pa-md rounded-borders text-overline">
             <q-item-label class="">Номер заказа: {{ orderId }}</q-item-label>
             <q-item-label
               >Позиций в заказе: {{ order.products?.length }}</q-item-label
@@ -42,7 +43,7 @@
             >
             <q-item-label>Дата заказа: {{ order.order_date }}</q-item-label>
           </div>
-        </q-card-section>
+        </div>
       </q-card-section>
       <q-separator></q-separator>
       <q-card-section>
@@ -60,6 +61,7 @@
             ></q-tab>
           </q-tabs>
         </q-toolbar>
+        <!-- ТУТ ПРОБЛЕМА -->
         <OrdersOverviewTable
           v-if="tableTab === 'orders'"
           tableTitle="Список заказов"
@@ -76,6 +78,7 @@
           :table-pagination="tablePagination"
           :createButton="false"
           :checkboxes="true"
+          :columns="productsColumns"
           @addSelectedItems="addSelectedItems"
           @getSearchItems="getSearchItems"
         >
@@ -98,7 +101,12 @@ import { useRoute } from "vue-router";
 import { showData, getData, updateData } from "src/utils/crud/baseCrud";
 import OrdersOverviewTable from "src/components/admin_blocks/tables/OrdersOverviewTable.vue";
 import TableProduct from "src/components/admin_blocks/tables/ProductTable.vue";
+import { productsColumns } from "src/constants/tables_columns/productsColumns";
 import { useQuasar } from "quasar";
+
+import useScreenWidth from "src/plugins/screenPlugin.js";
+const { screenWidth } = useScreenWidth();
+
 const router = useRoute();
 const $q = useQuasar();
 const orderId = router.params.orderId;

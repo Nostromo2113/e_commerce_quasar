@@ -1,5 +1,5 @@
-import { api } from "src/boot/axios";
-
+import { initAuthApi } from "../api";
+const api = initAuthApi();
 export const getData = async (path, query = null, id = null) => {
   const adminPath = `admin/${path}`;
   console.log("crud", path, id, query);

@@ -1,16 +1,18 @@
 <template>
   <q-toolbar v-if="breadcrumbs.length > 0">
-    <ol class="breadcrumbs" v-for="(item, index) in breadcrumbs" :key="index">
-      <li class="breadcrumb-item">
-        <div>
-          <RouterLink
-            :to="item.link"
-            class="breadcrumb-link"
-            :class="{ 'breadcrumb-item-active': item.link == route.fullPath }"
-          >
-            {{ item.text }}
-          </RouterLink>
-        </div>
+    <ol class="breadcrumbs">
+      <li
+        class="breadcrumb-item"
+        v-for="(item, index) in breadcrumbs"
+        :key="index"
+      >
+        <q-btn
+          flat
+          :label="item.text"
+          dense
+          :disable="item.link === route.fullPath"
+          @click="navigate(item.link)"
+        ></q-btn>
       </li>
     </ol>
   </q-toolbar>
@@ -19,7 +21,9 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 // Получаем текущий маршрут
 const route = useRoute();
 
@@ -44,13 +48,18 @@ const breadcrumbs = computed(() => {
   updateBreadcrumbs.splice(0, 2);
   return updateBreadcrumbs;
 });
+
+const navigate = (link) => {
+  if (link && link !== route.fullPath) {
+    router.push(link); // Навигация по маршруту
+  }
+};
 </script>
 
 <style scoped>
 .breadcrumbs-toolbar {
   padding: 8px 16px; /* Отступы для элемента */
   box-shadow: 0px 0px 1px 0px black;
-  color: white;
 }
 
 .breadcrumbs {
@@ -62,7 +71,7 @@ const breadcrumbs = computed(() => {
 }
 
 .breadcrumb-item a {
-  color: white; /* Синий цвет ссылок в стиле Material */
+  color: #24282b; /* Синий цвет ссылок в стиле Material */
   text-decoration: none;
   transition: color 0.3s; /* Плавный переход при наведении */
 }

@@ -1,17 +1,21 @@
 <template>
-  <user-table
-    v-if="preloaders.table"
-    :preloadersTable="preloadersTable"
-    :columns="usersColumns"
-    :table-pagination="tablePagination"
-    tableTitle="Пользователи"
-    :table-data="rows"
-    createButton
-    @getItem="getData"
-    @destroyItem="destroyCategory"
-    @storeItem="storeCategory"
-    @updateItem="updateCategory"
-  ></user-table>
+  <div>
+    <div class="q-pa-sm fix-width">
+      <user-table
+        v-if="preloaders.table"
+        :preloadersTable="preloadersTable"
+        :columns="usersColumns"
+        :table-pagination="tablePagination"
+        tableTitle="Пользователи"
+        :table-data="rows"
+        createButton
+        @getItem="getData"
+        @destroyItem="destroyCategory"
+        @storeItem="storeCategory"
+        @updateItem="updateCategory"
+      ></user-table>
+    </div>
+  </div>
   <div v-if="!preloaders.table" class="col flex-center">
     <q-spinner-grid
       color="primary"
@@ -19,7 +23,6 @@
       class="q-mx-auto"
     ></q-spinner-grid>
   </div>
-  <RouterView></RouterView>
 </template>
 <script setup>
 import { ref } from "vue";

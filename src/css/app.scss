@@ -42,12 +42,27 @@
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Создаем три равные колонки */
-  gap: 10px; /* Расстояние между элементами */
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+@media (max-width: 1250px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 950px) {
+  .grid-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .main-container {
-  width: 1790px;
+  max-width: 1790px;
   padding-inline: 10px;
   margin-inline: auto;
+}
+
+.fix-width {
+  max-width: 100vw;
 }

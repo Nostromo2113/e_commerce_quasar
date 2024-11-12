@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div>
     <q-table
       :title="tableTitle"
       :rows="rows"
@@ -8,6 +8,7 @@
       row-key="title"
       flat
       bordered
+      class="fix-width"
     >
       <template v-slot:top-right>
         <q-btn
@@ -49,7 +50,7 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 import { useRouter } from "vue-router";
 import { defineEmits } from "vue";

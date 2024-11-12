@@ -1,12 +1,14 @@
 <template>
-  <TableOrder
-    v-if="preloaders.table"
-    :preloadersTable="preloaders"
-    :columns="ordersColumns"
-    :table-pagination="tablePagination"
-    tableTitle="Заказы"
-    :table-data="rows"
-  ></TableOrder>
+  <div class="q-pa-sm fix-width">
+    <TableOrder
+      v-if="preloaders.table"
+      :preloadersTable="preloaders"
+      :columns="ordersColumns"
+      :table-pagination="tablePagination"
+      tableTitle="Заказы"
+      :table-data="rows"
+    ></TableOrder>
+  </div>
   <div v-if="!preloaders.table" class="col flex-center">
     <q-spinner-grid
       color="primary"

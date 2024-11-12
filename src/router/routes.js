@@ -5,6 +5,11 @@ const routes = [
     redirect: "/admin/index",
     children: [
       {
+        path: "auth",
+        name: "admin.auth",
+        component: () => import("pages/admin/LoginPage.vue"),
+      },
+      {
         path: "index",
         name: "admin.index",
         component: () => import("pages/admin/IndexPage.vue"),
@@ -36,7 +41,7 @@ const routes = [
             path: ":userId",
             component: () => import("src/layouts/admin/UserLayout.vue"),
             redirect: "/admin/user/list",
-            meta: { title: "Список пользователей" },
+            meta: { title: "Пользователи" },
             children: [
               {
                 path: "orders",
@@ -49,15 +54,15 @@ const routes = [
                 component: () => import("src/layouts/admin/UserLayout.vue"),
                 redirect: (to) => `/admin/user/${to.params.userId}/orders/`,
                 meta: { title: "Пользователь" },
-                children: [
-                  {
-                    path: "detail",
-                    name: "admin.user.detail",
-                    component: () =>
-                      import("src/components/admin_blocks/blocks/UserShow.vue"),
-                    meta: { title: "Пользователь подробно" },
-                  },
-                ],
+                // children: [
+                //   {
+                //     path: "detail",
+                //     name: "admin.user.detail",
+                //     component: () =>
+                //       import("src/components/admin_blocks/blocks/UserShow.vue"),
+                //     meta: { title: "Пользователь подробно" },
+                //   },
+                // ],
               },
               {
                 path: "order",
@@ -70,7 +75,7 @@ const routes = [
                     path: ":orderId",
                     name: "admin.order.show",
                     component: () => import("src/pages/admin/OrderPage.vue"),
-                    meta: { title: "Заказы пользователя" },
+                    meta: { title: "Заказы" },
                   },
                 ],
               },
@@ -104,7 +109,7 @@ const routes = [
                 meta: { title: "продукт" },
               },
               {
-                path: "proucts/create",
+                path: "create",
                 name: "admin.product.create",
                 component: () => import("src/pages/admin/ProductPage.vue"),
                 meta: { title: "создать продукт" },

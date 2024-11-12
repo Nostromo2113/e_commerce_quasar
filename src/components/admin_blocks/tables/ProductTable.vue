@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md">
+  <!-- v-if="screenWidth > 1350"  -->
+  <div>
     <q-table
       :title="tableTitle"
       :rows="rows"
@@ -85,12 +86,21 @@
       </template>
     </q-table>
   </div>
+  <!-- v-if="screenWidth < 1350" -->
+  <product-table-grid
+    v-if="false"
+    :rows="rows"
+    @navigateToProduct="navigateToProduct"
+  />
 </template>
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import SearchForm from "../forms/SearchForm.vue";
+import ProductTableGrid from "./grid_tables/ProductTableGrid.vue";
 import { defineEmits } from "vue";
+import useScreenWidth from "src/plugins/screenPlugin.js";
+const { screenWidth } = useScreenWidth();
 
 const emit = defineEmits([
   "getItem",
@@ -170,7 +180,6 @@ onMounted(() => {
 watch(
   () => props.tableData,
   (newVal) => {
-    console.log("NEWVAL");
     rows.value = newVal;
   },
   { immediate: true }
